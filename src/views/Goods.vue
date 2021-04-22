@@ -15,15 +15,84 @@
     <van-loading v-else-if="!$store.state.isShow" class="loading" size="60px"
       >加载中...</van-loading
     >
+    <div class="goods-list">
+      <div class="goods-head">
+        <div class="head-title">
+          <div :class="{ all: actClass === 'all' }" @click="handleClick('all')">
+            综合
+          </div>
+          <div
+            :class="{ sale: actClass === 'sale' }"
+            @click="handleClick('sale')"
+          >
+            销量
+          </div>
+          <div
+            :class="[
+              { 'price-down price': actClass === 'price-down price' },
+              { 'price-up price': actClass === 'price-up price' },
+            ]"
+            class="priceBtn"
+            @click="handleClick('price-up price')"
+          >
+            价格
+          </div>
+        </div>
+      </div>
+      <div class="goods-content">
+        <van-pull-refresh
+          v-model="isLoading"
+          @refresh="onRefresh"
+          class="refreshLoad"
+        >
+          <goods-list></goods-list>
+        </van-pull-refresh>
+      </div>
+    </div>
+    <van-tabbar v-model="active">
+      <van-tabbar-item icon="home-o">首页</van-tabbar-item>
+      <van-tabbar-item icon="search" dot>商品</van-tabbar-item>
+      <van-tabbar-item icon="friends-o" badge="5">购物车</van-tabbar-item>
+      <van-tabbar-item icon="setting-o" badge="20">用户</van-tabbar-item>
+    </van-tabbar>
   </div>
 </template>
 <script>
 import OneTab from '../components/OneTab.vue'
 import SideNav from '../components/SideNav.vue'
+import GoodsList from '../components/GoodsList.vue'
 export default {
+  data () {
+    return {
+      isLoading: false,
+      actClass: 'all',
+      active: 0
+    }
+  },
   components: {
     OneTab,
-    SideNav
+    SideNav,
+    GoodsList
+  },
+  methods: {
+    onRefresh () {
+      setTimeout(() => {
+        this.isLoading = false
+      }, 1000)
+    },
+    handleClick (value) {
+      if (this.actClass === 'price-up price' && value === 'price-up price') {
+        this.actClass = 'price-down price'
+        return
+      } else if (
+        this.actClass === 'price-down price' &&
+        value === 'price-up price'
+      ) {
+        this.actClass = 'price-up price'
+        return
+      }
+      this.actClass = value
+    }
   }
 }
 </script>
@@ -31,8 +100,13 @@ export default {
 .goods {
   .head {
     width: 375px;
-    margin-top: 11px;
-    margin-bottom: 11px;
+    padding-top: 11px;
+    padding-bottom: 11px;
+    z-index: 100;
+    position: fixed;
+    left: 0;
+    top: 0;
+    background-color: #fff;
     .search {
       width: 355px;
       height: 33px;
@@ -54,6 +128,85 @@ export default {
     top: 45%;
     left: 5%;
     transform: translateY(-50%);
+  }
+  .goods-list {
+    width: 296px;
+    margin-left: 79px;
+    bottom: 50px;
+    margin-top: 135px;
+    position: relative;
+    .goods-head {
+      position: fixed;
+      width: 296px;
+      top: 135px;
+      background-color: #fff;
+      right: 0;
+      z-index: 100;
+      height: 25px;
+      display: flex;
+      justify-content: flex-end;
+      border-top: 1px solid #eee;
+      .head-title {
+        display: flex;
+        text-align: center;
+        margin-right: 8px;
+        div {
+          width: 50px;
+          text-align: center;
+          line-height: 25px;
+          color: #cecece;
+          position: relative;
+          &.sale,
+          &.all,
+          &.price {
+            color: #ff1a90;
+            font-weight: bold;
+          }
+          &.priceBtn::before {
+            position: absolute;
+            content: "";
+            width: 0;
+            height: 0;
+            right: 0;
+            top: 2px;
+            border: 4px solid transparent;
+            border-bottom-color: #cecece;
+          }
+          &.priceBtn::after {
+            position: absolute;
+            content: "";
+            width: 0;
+            height: 0;
+            right: 0;
+            bottom: 4px;
+            border: 4px solid transparent;
+            border-top-color: #cecece;
+          }
+          &.price-down::after {
+            border-top-color: #ff1a90;
+          }
+          &.price-up::before {
+            border-bottom-color: #ff1a90;
+          }
+        }
+      }
+    }
+    .goods-content {
+      position: absolute;
+      left: 0;
+      top: 72px;
+      //padding-bottom: 50px;
+      height: calc(100vh - 210px);
+      overflow-y: scroll;
+      &::-webkit-scrollbar {
+        width: 0;
+        background: none;
+      }
+    }
+    /* .refreshLoad {
+      position: fixed;
+      top: 160px;
+    } */
   }
 }
 </style>

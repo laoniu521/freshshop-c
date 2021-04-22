@@ -15,7 +15,14 @@
 </template>
 <script>
 import moveTo from './utils/moveTo'
+// import production from '../api/production'
 export default {
+  mounted () {
+    const type = this.$store.state.sideNavList[this.actIndex]
+    console.log()
+    this.$store.dispatch('changeGoodsListAction', type)
+    console.log(this.$store.state.goodsList)
+  },
   data () {
     return {
       actIndex: 0,
@@ -36,6 +43,12 @@ export default {
       const pTop = this.$refs.sideNav.getBoundingClientRect().top
       const dis = sHeight / 2 + sTop - pHeight / 2 - pTop
       moveTo(this.$refs.sideNav, dis, 'scrollTop')
+      this.$store.dispatch(
+        'changeGoodsListAction',
+        this.$store.state.sideNavList[this.actIndex]
+      )
+      console.log(this.$store.state.sideNavList[this.actIndex])
+      console.log(this.$store.state.goodsList)
     }
   }
 }
@@ -45,8 +58,11 @@ export default {
   position: fixed;
   left: 0;
   top: 135px;
+  bottom: 50px;
   overflow-y: auto;
-  height: calc(100vh - 170px);
+  //height: calc(100vh - 170px);
+  background: #eee;
+  font-weight: bold;
   &::-webkit-scrollbar {
     width: 0;
     background-color: none;
@@ -57,7 +73,7 @@ export default {
     position: relative;
     div {
       height: 18px;
-      padding: 11px 20px;
+      padding: 11px 15.5px;
       line-height: 18px;
     }
     &.active {

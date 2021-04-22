@@ -181,7 +181,7 @@ export default {
   .tab-item {
     width: 50px;
     height: 70px;
-    margin-left: 10px;
+    padding-left: 10px;
     background-color: #fff;
     .img {
       width: 45px;
