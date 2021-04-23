@@ -1,7 +1,7 @@
 <template>
   <div class="goods">
     <div class="head">
-      <div class="search">
+      <div class="search" @touchend="searchOn">
         <van-icon name="search" />
         <div>大苹果1块钱1斤</div>
       </div>
@@ -45,15 +45,24 @@
           @refresh="onRefresh"
           class="refreshLoad"
         >
-          <goods-list></goods-list>
+          <goods-list
+            @changeNumber="changeNumber"
+            v-for="item in $store.state.goodsList"
+            :key="item.id"
+            :item="item"
+            :num="countData[item.id]"
+            :animate="animate"
+          ></goods-list>
         </van-pull-refresh>
       </div>
     </div>
     <van-tabbar v-model="active">
       <van-tabbar-item icon="home-o">首页</van-tabbar-item>
       <van-tabbar-item icon="search" dot>商品</van-tabbar-item>
-      <van-tabbar-item icon="friends-o" badge="5">购物车</van-tabbar-item>
-      <van-tabbar-item icon="setting-o" badge="20">用户</van-tabbar-item>
+      <van-tabbar-item icon="friends-o" :badge="totalProduction"
+        >购物车</van-tabbar-item
+      >
+      <van-tabbar-item icon="setting-o">用户</van-tabbar-item>
     </van-tabbar>
   </div>
 </template>
@@ -62,11 +71,18 @@ import OneTab from '../components/OneTab.vue'
 import SideNav from '../components/SideNav.vue'
 import GoodsList from '../components/GoodsList.vue'
 export default {
+  created () {
+    this.countData = JSON.parse(localStorage.getItem('countData')) || {}
+    this.total = this.countData
+  },
   data () {
     return {
       isLoading: false,
       actClass: 'all',
-      active: 0
+      active: 0,
+      goodsList: [],
+      countData: {},
+      animate: true
     }
   },
   components: {
@@ -83,15 +99,54 @@ export default {
     handleClick (value) {
       if (this.actClass === 'price-up price' && value === 'price-up price') {
         this.actClass = 'price-down price'
+        this.$store.commit('changeSort', 'price-down')
+        this.$store.dispatch(
+          'changeGoodsListAction',
+          this.$store.state.sideNavList[0]
+        )
         return
       } else if (
         this.actClass === 'price-down price' &&
         value === 'price-up price'
       ) {
         this.actClass = 'price-up price'
+        this.$store.commit('changeSort', 'price-up')
+        this.$store.dispatch(
+          'changeGoodsListAction',
+          this.$store.state.sideNavList[0]
+        )
         return
       }
       this.actClass = value
+      this.$store.commit('changeSort', value)
+      this.$store.dispatch(
+        'changeGoodsListAction',
+        this.$store.state.sideNavList[0]
+      )
+    },
+    changeNumber (count, id) {
+      console.log(count)
+      this.$store.commit('changeCountData', { id, count })
+      this.countData = { ...this.countData, ...this.$store.state.countData }
+      localStorage.setItem(
+        'countData',
+        JSON.stringify({ ...this.countData, ...{ [id]: count } })
+      )
+    },
+    searchOn () {
+      this.$router.push('/search')
+    }
+  },
+  computed: {
+    totalProduction () {
+      const totalProduction = Object.values(this.countData).reduce(
+        (prev, ele) => {
+          return prev + ele
+        },
+        0
+      )
+      // console.log(totalProduction)
+      return totalProduction
     }
   }
 }

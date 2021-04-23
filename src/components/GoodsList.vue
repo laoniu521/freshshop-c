@@ -1,10 +1,6 @@
 <template>
   <div class="goods-lists">
-    <div
-      class="goods-list-item"
-      v-for="item in $store.state.goodsList"
-      :key="item.id"
-    >
+    <div class="goods-list-item">
       <div class="goods-img">
         <img :src="item.images[0]" alt="" />
       </div>
@@ -17,9 +13,11 @@
         <div class="money">
           <div class="price">{{ item.price }}</div>
           <div class="number">
-            <button v-if="number" @click="changeNumber(-1)">-</button>
-            <span v-if="number">{{ number }}</span>
-            <button @click="changeNumber(1)">+</button>
+            <button v-if="num" @touchend="changeNumber(-1, item.id, $event)">
+              -
+            </button>
+            <span v-if="num">{{ num }}</span>
+            <button @touchend="changeNumber(1, item.id, $event)">+</button>
           </div>
         </div>
       </div>
@@ -27,19 +25,57 @@
   </div>
 </template>
 <script>
+import dropTo from './utils/dropTo'
 export default {
+  props: ['item', 'num', 'animate'],
+  created () {
+    // console.log(this.num)
+    if (this.num === null || this.num === undefined) {
+      this.count = 0
+      return
+    }
+    this.count = this.num
+  },
   data () {
     return {
-      number: 0
-      // goodsList:[]
+      count: 0
     }
   },
   methods: {
-    changeNumber (value) {
-      this.number += value
-      if (this.number <= 0) {
-        this.number = 0
+    changeNumber (value, id, e) {
+      console.log(this.animate)
+      if (value > 0 && this.animate) {
+        // const sWidth = 90
+        console.log(1)
+        const sLeft = e.target.parentNode.parentNode.parentNode.parentNode.getBoundingClientRect()
+          .left
+        // console.log(sLeft, sWidth)
+        const pWidth = 93.8
+        const pLeft = 375.2
+
+        // const sHeight = 90
+        const sTop = e.target.parentNode.parentNode.parentNode.parentNode.getBoundingClientRect()
+          .top
+        // const pHeight = 50;
+        const pTop = document
+          .getElementsByClassName('van-tabbar-item')[2]
+          .getBoundingClientRect().top
+        const pHeight = 50
+        dropTo({
+          startX: sLeft,
+          startY: sTop,
+          endX: pLeft + pWidth,
+          endY: pTop + pHeight,
+          src: this.item.images[0],
+          width: 180,
+          height: 180
+        })
       }
+      this.count += value
+      if (this.count <= 0) {
+        this.count = 0
+      }
+      this.$emit('changeNumber', this.count, id)
     }
   }
 }

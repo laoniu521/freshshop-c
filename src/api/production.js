@@ -18,7 +18,27 @@ function getGoodsList (type, page, size, sort) {
     }
   })
 }
+// 模糊搜索
+function getSearchResult (value) {
+  return myAxios.get('/likeSearch', {
+    params: {
+      likeValue: value
+    }
+  })
+}
+// 搜索
+function getSearchList (type, page, size) {
+  return myAxios.get('/search', {
+    params: {
+      type,
+      page,
+      size
+    }
+  })
+}
 export default {
   getSideNavList,
-  getGoodsList
+  getGoodsList,
+  getSearchResult,
+  getSearchList
 }

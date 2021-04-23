@@ -10,7 +10,8 @@ export default new Vuex.Store({
     goodsList: [],
     page: 1,
     size: 10,
-    sort: 'all'
+    sort: 'all',
+    countData: {}
   },
   mutations: {
     changeSideNavList (state, list) {
@@ -28,6 +29,12 @@ export default new Vuex.Store({
     },
     changeSort (state, value) {
       state.sort = value
+    },
+    changeCountData (state, {
+      id,
+      count
+    }) {
+      Vue.set(state.countData, id, count)
     }
   },
   actions: {
@@ -44,7 +51,6 @@ export default new Vuex.Store({
       state
     }, type) {
       const resultList = await production.getGoodsList(type, state.page, state.size, state.sort)
-
       commit('changeGoodsList', resultList.list)
     }
   },

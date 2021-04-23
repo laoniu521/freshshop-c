@@ -17,11 +17,10 @@
 import moveTo from './utils/moveTo'
 // import production from '../api/production'
 export default {
-  mounted () {
+  created () {
     const type = this.$store.state.sideNavList[this.actIndex]
-    console.log()
     this.$store.dispatch('changeGoodsListAction', type)
-    console.log(this.$store.state.goodsList)
+    // console.log(this.$store.state.goodsList)
   },
   data () {
     return {
@@ -47,8 +46,6 @@ export default {
         'changeGoodsListAction',
         this.$store.state.sideNavList[this.actIndex]
       )
-      console.log(this.$store.state.sideNavList[this.actIndex])
-      console.log(this.$store.state.goodsList)
     }
   }
 }

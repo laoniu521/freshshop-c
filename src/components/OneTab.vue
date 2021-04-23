@@ -26,7 +26,6 @@ export default {
       'changeSideNavListAction',
       this.menuList[this.actIndex].title
     )
-    console.log(this.menuList[this.actIndex].title)
   },
   data () {
     return {
