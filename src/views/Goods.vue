@@ -57,12 +57,18 @@
       </div>
     </div>
     <van-tabbar v-model="active">
-      <van-tabbar-item icon="home-o">首页</van-tabbar-item>
-      <van-tabbar-item icon="search" dot>商品</van-tabbar-item>
-      <van-tabbar-item icon="friends-o" :badge="totalProduction"
-        >购物车</van-tabbar-item
-      >
-      <van-tabbar-item icon="setting-o">用户</van-tabbar-item>
+      <van-tabbar-item icon="home-o">
+        <router-link @touchend="changeAct(1)" to="/">首页</router-link>
+      </van-tabbar-item>
+      <van-tabbar-item icon="apps-o">
+        <router-link @touchend="changeAct(1)" to="/"> 商品 </router-link>
+      </van-tabbar-item>
+      <van-tabbar-item icon="cart-o" :badge="totalProduction">
+        <router-link @touchend="changeAct(2)" to="/cart">购物车</router-link>
+      </van-tabbar-item>
+      <van-tabbar-item icon="user-o">
+        <router-link @touchend="changeAct(1)" to="/"> 用户 </router-link>
+      </van-tabbar-item>
     </van-tabbar>
   </div>
 </template>
@@ -79,7 +85,7 @@ export default {
     return {
       isLoading: false,
       actClass: 'all',
-      active: 0,
+      active: 1,
       goodsList: [],
       countData: {},
       animate: true
@@ -135,6 +141,9 @@ export default {
     },
     searchOn () {
       this.$router.push('/search')
+    },
+    changeAct (value) {
+      this.active = value
     }
   },
   computed: {
@@ -176,6 +185,18 @@ export default {
         vertical-align: middle;
         color: #a1a1a1;
       }
+    }
+  }
+  .van-tabbar-item {
+    position: relative;
+    a {
+      position: absolute;
+      width: 93.8px;
+      height: 50px;
+      left: 0;
+      top: 0;
+      padding-top: 36px;
+      text-align: center;
     }
   }
   .loading {

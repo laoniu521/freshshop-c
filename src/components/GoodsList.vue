@@ -13,11 +13,16 @@
         <div class="money">
           <div class="price">{{ item.price }}</div>
           <div class="number">
-            <button v-if="num" @touchend="changeNumber(-1, item.id, $event)">
+            <button
+              v-if="num"
+              @touchend.prevent="changeNumber(-1, item.id, $event)"
+            >
               -
             </button>
             <span v-if="num">{{ num }}</span>
-            <button @touchend="changeNumber(1, item.id, $event)">+</button>
+            <button @touchend.prevent="changeNumber(1, item.id, $event)">
+              +
+            </button>
           </div>
         </div>
       </div>

@@ -36,9 +36,18 @@ function getSearchList (type, page, size) {
     }
   })
 }
+// 购物车页通过id获取商品列表
+function getGoodsListById (value) {
+  return myAxios.get('/getGoodsByIds', {
+    params: {
+      value
+    }
+  })
+}
 export default {
   getSideNavList,
   getGoodsList,
   getSearchResult,
-  getSearchList
+  getSearchList,
+  getGoodsListById
 }

@@ -1,14 +1,19 @@
 <template>
   <div class="search-wrapper">
     <div class="search-head">
-      <van-icon name="arrow-left" size="45" @touchend="$router.push('/')" />
+      <van-icon name="arrow-left" size="35" @touchend="$router.push('/')" />
       <van-search
         v-model="value"
         placeholder="大芒果10块钱2斤"
         @input="onInput"
       />
       <div class="searchBtn" v-if="search">取消</div>
-      <van-icon name="shopping-cart-o" :badge="totalProduction" v-else />
+      <van-icon
+        name="shopping-cart-o"
+        :badge="totalProduction"
+        v-else
+        @touchend="$router.push('/cart')"
+      />
     </div>
     <div class="search-content" v-if="result.length">
       <div
@@ -20,9 +25,14 @@
         {{ item }}
       </div>
     </div>
-    <div class="search-history">
-      <div></div>
-    </div>
+    <!-- <div class="search-history">
+      <div>酒</div>
+      <div>酒</div>
+      <div>酒</div>
+      <div>酒</div>
+      <div>酒</div>
+      <div>酒</div>
+    </div> -->
     <div class="result-content">
       <goods-list
         v-for="item in searchList"
@@ -110,6 +120,10 @@ export default {
 }
 </script>
 <style lang="less" scoped>
+.search-wrapper {
+  z-index: 1000;
+  background-color: #ffffff;
+}
 .search-head {
   display: flex;
   align-content: center;
@@ -131,6 +145,7 @@ export default {
   height: 400px;
   overflow-y: scroll;
   z-index: 1000;
+  background-color: #ffffff;
   &::-webkit-scrollbar {
     width: 0;
     background: none;
@@ -146,13 +161,25 @@ export default {
   left: 50%;
   top: 48px;
 
-  height: 400px;
+  height: 100vh;
   transform: translateX(-50%);
   z-index: -1;
   overflow-y: scroll;
   &::-webkit-scrollbar {
     width: 0;
     background: none;
+  }
+}
+.search-history {
+  position: fixed;
+  left: 10px;
+  top: 423px;
+  display: flex;
+  flex-wrap: wrap;
+  div {
+    padding: 5px 10px;
+    background-color: #ddd;
+    margin-left: 5px;
   }
 }
 </style>
